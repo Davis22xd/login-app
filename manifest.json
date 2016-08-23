@@ -1,0 +1,7 @@
+{
+  "name": "loginApp",
+  "short_name": "loginApp",
+  "description": "application to connect login with api rest communication",
+  "start_url": "/",
+  "display": "standalone"
+}

@@ -1,0 +1,27 @@
+<link rel="import" href="../../app/bower_components/polymer/polymer.html">
+
+<dom-module id="login-page">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]</h2>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'login-page',
+
+      properties: {
+        prop1: {
+          type: String,
+          value: 'login-page',
+        },
+      },
+
+    });
+  </script>
+</dom-module>
