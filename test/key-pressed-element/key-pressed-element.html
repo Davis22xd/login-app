@@ -1,0 +1,61 @@
+<!--
+coding: utf-8
+Copyright (C) 2016 Sumitrag (www.sumitrag.com)
+Developer: David Proaño <davisxdpfr@gmail.com>
+-->
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>key-pressed-test</title>
+
+    <script src="../../app/bower_components/webcomponentsjs/webcomponents.min.js"></script>
+    <script src="../../app/bower_components/web-component-tester/browser.js"></script>
+    <script src="../../app/bower_components/iron-test-helpers/test-helpers.js"></script>
+    <script src="../../app/bower_components/test-fixture/test-fixture-mocha.js"></script>
+    <script src="../../app/bower_components/iron-test-helpers/mock-interactions.js"></script>
+    <script src="../../app/bower_components/jquery/dist/jquery.min.js"></script>
+
+    <script src="../../jss/arrays.js"></script>
+
+    <link rel="import" href="../../app/bower_components/test-fixture/test-fixture.html">
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../../src/key-press-element/key-pressed-element.html">
+</head>
+<body>
+<example-element></example-element>
+<test-fixture id="basic">
+    <template>
+        <key-pressed-element></key-pressed-element>
+    </template>
+</test-fixture>
+<script>
+    var nullError = " no debe ser null";
+    var definedError = " debe estar definido";
+    var element, example;
+
+    suite('Search bar tests', function() {
+
+        setup(function() {
+            element = fixture('basic');
+            example = document.querySelector('example-element');
+            example.clicked = false;
+            element.actionElement = example;
+            example.onClick = function() {
+              example.clicked = true;
+            };
+        });
+
+        test('initializing element', function() {
+            assert.equal(element.is, 'key-pressed-element');
+        });
+
+        test('searching element in list with true results', function() {
+            MockInteractions.pressEnter(element);
+            expect(example.clicked).to.be.true;
+        });
+    });
+</script>
+</body>
+</html>
