@@ -1,0 +1,37 @@
+<script>
+    function setParams() {
+        'use strict';
+        //Function that creates all the cookies for the iron-ajax request
+        window.getCSRFCookie = function() {
+            var b = document.cookie.match('(^|;)\\s*csrftoken\\s*=\\s*([^;]+)');
+            return b ? b.pop() : '';
+        };
+
+//Headers information used by the iron-ajax request
+        window.CSRFHeaders = {
+            'X-CSRFToken': getCSRFCookie(),
+            'X-Requested-With': 'XMLHttpRequest'
+        };
+
+        window.params = {
+            'format': 'json',
+            'handle': 'json',
+            'contentType': 'application/json',
+            'api': '/api/',
+            'host': 'localhost',
+            'getWebSocketProtocol': function(){
+                return (window.location.protocol === 'https:')? 'wss://' : 'ws://';
+            }
+        };
+    }
+
+    setParams();
+
+    function removeDash(string) {
+        return (string.indexOf('-') >= 0) ? string.replace('-', '') : string;
+    }
+
+    function capitalizeFirstLetter(string) {
+        return (string) ? string.charAt(0).toUpperCase() + string.slice(1) : '';
+    }
+</script>

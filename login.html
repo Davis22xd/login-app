@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <title>SUMITAXI</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="/manifest.json">
+  <script>
+    window.performance && performance.mark && performance.mark('index.html');
+
+    Polymer = {lazyRegister: true, dom: 'shadow'};
+
+    (function() {
+      if ('registerElement' in document
+              && 'import' in document.createElement('link')
+              && 'content' in document.createElement('template')) {
+      } else {
+        // polyfill the platform!
+        var e = document.createElement('script');
+        e.src = '/app/bower_components/webcomponentsjs/webcomponents-lite.min.js';
+        document.body.appendChild(e);
+      }
+    })();
+
+  </script>
+  <link rel="import" href="src/login-page/login-page.html">
+</head>
+
+<style>
+  html {
+    height: 100%;
+    width: 100%;
+  }
+
+  body {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    /*background-image: url(images/blur.jpg);*/
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    color: #fff;
+    font-family: Arial;
+    font-size: 12px;
+  }
+
+  .body {
+    position: absolute;
+    width: auto;
+    height: auto;
+    background-size: cover;
+    -webkit-filter: blur(5px);
+    z-index: 0;
+  }
+
+  .sk-spinner-pulse {
+    width: 40px;
+    height: 40px;
+    margin: 40px auto;
+    background-color: #333;
+    border-radius: 100%;
+    -webkit-animation: sk-pulseScaleOut 1s infinite ease-in-out;
+    animation: sk-pulseScaleOut 1s infinite ease-in-out;
+  }
+
+  @-webkit-keyframes sk-pulseScaleOut {
+    0% {
+      -webkit-transform: scale(0);
+      transform: scale(0);
+    }
+    100% {
+      -webkit-transform: scale(1);
+      transform: scale(1);
+      opacity: 0;
+    }
+  }
+
+  @keyframes sk-pulseScaleOut {
+    0% {
+      -webkit-transform: scale(0);
+      transform: scale(0);
+    }
+    100% {
+      -webkit-transform: scale(1);
+      transform: scale(1);
+      opacity: 0;
+    }
+  }
+</style>
+<div class="body fullbleed layout vertical">
+  <div class="sk-spinner sk-spinner-pulse"></div>
+</div>
+</div>
+<login-page></login-page>
+</html>

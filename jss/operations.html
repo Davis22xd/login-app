@@ -1,0 +1,13 @@
+/**
+* Created by david on 7/18/16.
+*/
+<script>
+    function updateStyleDOM(scope, variable, value) {
+        scope.customStyle[variable] = value;
+        scope.updateStyles();
+    }
+
+    function isNumber(n) {
+        return !isNaN(parseFloat(n)) && isFinite(n);
+    }
+</script>

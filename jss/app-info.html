@@ -1,0 +1,152 @@
+<script>
+    /**
+     * Created by sumitrag-david on 29/07/16.
+     */
+    /**
+     * Created by sumitrag-david on 06/05/16.
+     */
+//TODO entities ID set should be done by rideContainer, somesteps could not be applied to just one entity
+    var application = '/api/vehicles';
+
+    var Urls = {
+        AUTHORIZED_DEVICES: function() {
+            return application + '/authorized_devices/';
+        },
+        LOGIN: function() {
+            return '/api/accounts/auth-session/';
+        },
+        LOGINBAD: function() {
+            return '/api/accounts/auth-session_bad/';
+        },
+    };
+
+    var vehicle = {
+        'resource': 'vehicle',
+        'verbose': 'Vehículo',
+        'verbosePlural': 'Vehículos',
+        'searchResource': 'AUTHORIZED_DEVICES',
+        'searchingVisibility': 'visible',
+        'optional': false,  //TODO define if it's optional
+        'table_headers': ['Nombre Completo', 'Teléfono', 'Dirección'],  //TODO define headers
+        'actionFields': ['Edit', 'Delete'],  //TODO define actions
+        'displayFunction': function(entity) {
+            var model = entity.model;
+            var plate = entity.plate;
+            return model + ' ' + plate;
+        },
+        'table': true,   //TODO to define
+        'tableActions': false,  //TODO to define
+        'createWorkFLow': [],  //TODO to define
+        'url': 'VEHICLES',
+        'id': 'VEHICLE_ID',
+        'entity': {}
+    };
+
+    function getURL(resource) {
+        'use strict';
+        return Urls[resource]();
+    }
+
+    function getURLFromEntity(entity) {
+        'use strict';
+        var model = entities[entity];
+        return Urls[model.url]();
+    }
+    function getVerboseFromEntity(entity) {
+        'use strict';
+        var model = entities[entity];
+        return model.verbose;
+    }
+
+    function getWorkFlowFromEntity(entity) {
+        'use strict';
+        var model = entities[entity];
+        return model.createWorkFLow;
+    }
+
+    //TODO change to workflow-behavoir
+    function setEntityIdentifier(entity, identifier) {
+        'use strict';
+        var entityModel = entities[entity];
+        entitiesId[entityModel.id] = identifier;
+    }
+
+    //TODO change to workflow-behavoir
+    function getIdentifierfromEntity(entity) {
+        'use strict';
+        var entityModel = entities[entity];
+        return entitiesId[entityModel.id];
+    }
+
+    function setEntity(model, entity) {
+        'use strict';
+        var entityModel = entities[model];
+        entityModel.entity = entity;
+
+        //TODO change to workflow-behavoir
+        setEntityIdentifier(model, entity.id);
+    }
+
+    function getEntity(entity) {
+        'use strict';
+        var entityModel = entities[entity];
+        return entityModel.entity;
+    }
+
+    function getEntityModel(entity) {
+        'use strict';
+        var entityModel = entities[entity];
+        return entityModel;
+    }
+
+    //TODO change to workflow-behavoir
+    function isOptional(entity) {
+        'use strict';
+        entity = entities[entity];
+        return entity.optional;
+    }
+
+    //TODO change to workflow-behavoir
+    function setEntityName(entity, name) {
+        'use strict';
+        var entityModel = entities[entity];
+        entityModel.name = name;
+    }
+
+    //TODO change to workflow-behavoir
+    function getEntityName(entity) {
+        'use strict';
+        var entityModel = entities[entity];
+        return entityModel.name;
+    }
+
+    //TODO change to workflow-behavoir
+    function setNumber(number, entity) {
+        if (checkNumber(number, 'ec') === 'celular') {
+            entities[entity].mobilePhone = number;
+            entities[entity].entity.mobilePhone = number;
+        }
+        else if (checkNumber(number, 'ec') === 'telefono_fijo') {
+            entities[entity].landline = number;
+            entities[entity].entity.landline = number;
+        }
+    }
+
+    //TODO change to workflow-behavoir
+    function getNumberFromEntity(entity) {
+        var model = entities[entity];
+        if (model.mobilePhone) {
+            return {
+                'numero': model.mobilePhone
+            };
+        }
+        else if (model.landline) {
+            return {
+                'numero': model.landline
+            };
+        }
+        else {
+            return null;
+        }
+    }
+</script>

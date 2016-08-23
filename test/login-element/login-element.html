@@ -1,0 +1,126 @@
+<!--
+coding: utf-8
+Copyright (C) 2016 Sumitrag (www.sumitrag.com)
+Developer: David Proaño <davisxdpfr@gmail.com>
+-->
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>check-list</title>
+
+    <script src="../../app/bower_components/webcomponentsjs/webcomponents.min.js"></script>
+    <script src="../../app/bower_components/web-component-tester/browser.js"></script>
+    <script src="../../app/bower_components/iron-test-helpers/test-helpers.js"></script>
+    <script src="../../app/bower_components/test-fixture/test-fixture-mocha.js"></script>
+    <script src="../../app/bower_components/iron-test-helpers/mock-interactions.js"></script>
+    <script src="../../app/bower_components/sinonjs/sinon.js"></script>
+
+    <script src="../../jss/arrays.js"></script>
+
+    <link rel="import" href="../../app/bower_components/test-fixture/test-fixture.html">
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../../src/login-element/login-element.html">
+</head>
+<body>
+<test-fixture id="basic">
+    <template>
+        <login-element resource="LOGIN"></login-element>
+    </template>
+</test-fixture>
+<test-fixture id="withError">
+    <template>
+        <login-element resource="LOGINBAD"></login-element>
+    </template>
+</test-fixture>
+<script>
+    var nullError = " no debe ser null";
+    var definedError = " debe estar definido";
+    var element;
+
+    function timePasses(ms) {
+        return new Promise(function(resolve) {
+            window.setTimeout(function() {
+                resolve();
+            }, ms);
+        });
+    }
+
+    suite('Login-element tests', function() {
+
+        var responseHeaders = {
+            json: { 'Content-Type': 'application/json' }
+        };
+
+        var server;
+
+        setup(function() {
+            server = sinon.fakeServer.create();
+            server.respondWith(
+                    'POST',
+                    '/api/accounts/auth-session/?format=json',
+                    [
+                        200,
+                        responseHeaders.json,
+                        '{"detail":"Session login successful."} '
+                    ]
+            );
+
+            server.respondWith(
+                    'POST',
+                    '/api/accounts/auth-session_bad/?format=json',
+                    [
+                        400,
+                        responseHeaders.json,
+                        '{"message": "datos incorrectos"}'
+                    ]
+            );
+
+        });
+
+        teardown(function() {
+            server.restore();
+        });
+
+        test('instantiating the element works', function() {
+            element = fixture('basic');
+            assert.equal(element.is, 'login-element');
+        });
+
+        test('calling bad request', function(done) {
+            element = fixture('withError');
+            element.addEventListener('set-error', function(event) {
+                expect(event.detail).to.not.be.undefined;
+                expect(event.detail).to.be.eql("Los datos del usuario no son correctos");
+                done();
+            });
+            element.Pagereloaded = false;
+            element.showError = function(error) {
+                this.fire('set-error',error);
+            };
+            MockInteractions.tap(element.$.btnIngresar);
+            server.respond();
+        });
+
+        test('calling good request', function() {
+            element = fixture('basic');
+            element.Pagereloaded = false;
+            element.completePost = function() {
+                element.Pagereloaded = true;
+            };
+            var request = element.$.ajaxPost.generateRequest();
+            server.respond();
+
+            return request.completes.then(function() {
+                return timePasses(1);
+            }).then(function() {
+                expect(element.Pagereloaded).to.be.true;
+            });
+        });
+
+    });
+
+</script>
+</body>
+</html>

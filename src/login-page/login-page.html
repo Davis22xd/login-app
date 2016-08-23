@@ -1,27 +1,188 @@
-<link rel="import" href="../../app/bower_components/polymer/polymer.html">
+<!--
+coding: utf-8
+Copyright (C) 2015 Sumitrag (www.sumitrag.com)
+Developer: David Proaño <davisxdpfr@gmail.com>
+-->
 
+<link rel="import"href="../../app/bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../app/bower_components/neon-animation/neon-animatable-behavior.html">
+<link rel="import" href="../../app/bower_components/neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="../../app/bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="../login-element/login-element.html">
+<link rel="import" href="../key-press-element/key-pressed-element.html">
+<!-- Login page, this element is going to be have the input as a password -->
 <dom-module id="login-page">
-  <template>
-    <style>
-      :host {
-        display: block;
-      }
-    </style>
-    <h2>Hello [[prop1]]</h2>
+<style is="custom-style">
+:host {
+  background: black;
+  visibility: hidden;
+  @apply(--layout-vertical);
+}
+
+.headerTop {
+  position: absolute;
+  text-align: center;
+  z-index: 2;
+  display: inline;
+  height: 10%;
+  top: 0;
+  width: 100%;
+  background-color: #395264;
+}
+
+
+.headerTop img {
+  width: 12%;
+}
+
+.login {
+  position: absolute;
+  top: calc(35% - 75px);
+  text-align: center;
+  height: 350px;
+  width: 30%;
+  padding: 10px;
+  z-index: 2;
+  margin-left: 35%;
+  margin-right: 35%;
+  margin-top:8px;
+  margin-bottom:2%;
+  transition:opacity 1s;
+  -webkit-transition:opacity 1s;
+
+}
+
+#triangle{
+  width:0;
+  border-top:12px solid transparent;
+  border-right:12px solid transparent;
+  border-bottom:12px solid #395264;
+  border-left:12px solid transparent;
+  margin:0 auto;
+}
+
+.login p{
+  background:#395264;
+  padding:20px 0;
+  font-size:140%;
+  font-weight:300;
+  text-align:center;
+  color:#FFFACF;
+}
+
+.login p img{
+  width: 15%;
+  height: 15%;
+}
+
+.login #header{
+  margin: 5% 0% 5% 0% !important;
+
+}
+
+.login p div {
+
+  color: #FFFACF;
+  font-family: 'Exo', sans-serif;
+  font-size: 35px;
+  font-weight: 200;
+  width: 50%;
+  display: block;
+}
+
+.login p span {
+  color: #B1B4D3 !important;
+}
+
+
+::-webkit-input-placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+::-moz-input-placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+
+#footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+#footer h2 {
+  text-align: center;
+  width: 100%;
+  color: #FFFACF;
+  margin-right: 10%;
+}
+
+</style>
+<template>
+  <div id="loginContainer">
+    <div class="headerTop" id="loginHeader">
+      <!--<img src="../../images/logowhite.svg" id="logoSumitrag">-->
+    </div>
+    <br>
+
+    <div class="login" id="loginBody">
+      <div id="triangle"></div>
+      <p id="header">
+        <!--<img src="../../images/unlock.png" id="logo">-->
+        SumiSys<span> Sumitrag</span></p>
+        <login-element id="login"></login-element>
+        <key-pressed-element id="key"></key-pressed-element>
+      </div>
+      <div id="footer">
+        <h2>Bienvenido al sistema SumiSys hecho por Sumitrag</h2>
+      </div>
+    </div>
   </template>
-
   <script>
+  (function () {
     Polymer({
-
       is: 'login-page',
 
+      behaviors: [
+        Polymer.NeonAnimatableBehavior,
+        Polymer.NeonAnimationRunnerBehavior
+      ],
+
       properties: {
-        prop1: {
-          type: String,
-          value: 'login-page',
-        },
+
+        animationConfig: {
+          type: Object,
+          value: function() {
+            return {
+              'entry': [ {
+                name: 'slide-down-animation',
+                node: this.$.loginHeader
+              },
+              {
+                name: 'slide-down-animation',
+                node: this.$.login
+              }
+            ]
+            };
+          }
+        }
+
+      },
+      attached: function() {
+        this.async(function() {
+          this.$.key.actionElement = this.$.login;
+          this.show();
+        });
       },
 
+      show: function() {
+        this.style.visibility = 'visible';
+        this.playAnimation('entry');
+      }
+
     });
+  })();
+
   </script>
 </dom-module>

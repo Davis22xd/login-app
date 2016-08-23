@@ -1,0 +1,149 @@
+<!--
+coding: utf-8
+Copyright (C) 2015 Sumitrag (www.sumitrag.com)
+Developer: David Proaño <davisxdpfr@gmail.com>
+-->
+
+<!--Polymer reference-->
+<link rel="import" href="../../app/bower_components/polymer/polymer.html">
+<link rel="import" href="../../app/bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../app/bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../app/bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../app/bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../app/bower_components/iron-a11y-keys/iron-a11y-keys.html">
+<link rel="import" href="../password-element/password-element.html">
+
+<link rel="import" href="../../jss/params.html">
+<link rel="import" href="../../jss/app-info.html">
+
+<!-- Password element, this element is going to be have the input as a password -->
+<dom-module id="login-element">
+    <style is="custom-style">
+        form {
+            background: #f0f0f0;
+            padding: 6% 4%;
+            box-shadow: #003366;
+            display: block;
+            min-height: 250px;
+        }
+
+        paper-input, #password {
+            height: 50px;
+            background: transparent;
+            font-weight: 400;
+            text-align: center;
+            margin: 2% 2% 2% 2%;
+            width: 92%;
+            padding: 4%;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 100%;
+            color: #555;
+        }
+
+        ::-webkit-input-placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        ::-moz-input-placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        paper-button {
+            color: #F4E9CB;
+            opacity: 0.9;
+            width: 94%;
+            background: #395264;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 100%;
+            transition: background .3s;
+            -webkit-transition: background .3s;
+            margin: 7% 2% 0% 2% !important;
+        }
+
+        paper-button:hover {
+            background: #5C5D84;
+        }
+
+        paper-input {
+            --paper-input-error: {
+                position: relative;
+            };
+        }
+    </style>
+    <template>
+        <iron-ajax
+                id="ajaxPost"
+                method="POST"
+                content-type="application/json"
+                params='{"format":"json"}'
+                handle-as="json"
+                on-error="errorPost" on-response="completePost"></iron-ajax>
+        <form>
+            <paper-input floatinglabel id="username" label="Nombre de Usuario" value="{{username}}"
+                         autofocus></paper-input>
+            <password-element id="password" label="Contraseña" value="{{password}}"></password-element>
+            <paper-button raised class="colorful" id="btnIngresar" on-click="onClick">INGRESAR</paper-button>
+        </form>
+        <iron-a11y-keys
+                id="keys"
+                keys="enter"
+                on-keys-pressed="_enterPressed">
+        </iron-a11y-keys>
+        <paper-toast id="toastResponse" duration="30000">
+        </paper-toast>
+    </template>
+    <script>
+        (function() {
+            Polymer({
+                is: 'login-element',
+
+                //attributes that the modal element has
+                properties: {
+                    password: {
+                        type: String,
+                        value: ''
+                    },
+                    username: String,
+                    resource:{
+                        type:String,
+                        observer:'setUrl'
+                    }
+                },
+
+                ready: function() {
+                    this.$.ajaxPost.headers = CSRFHeaders;
+                },
+
+                setUrl: function(resource) {
+                    if(resource){
+                        this.$.ajaxPost.url = getURL(resource);
+                    }
+                },
+
+                showError: function(error){
+                    this.$.toastResponse.text = error;
+                    this.$.toastResponse.show();
+                },
+
+                _enterPressed: function(event) {
+                    this.onClick();
+                },
+
+                errorPost: function(event, request) {
+                    var error = "Los datos del usuario no son correctos";
+                    this.showError(error);
+                },
+
+                completePost: function(event, request) {
+                    location.reload(true);
+                },
+
+                onClick: function() {
+                    var credentials = {username: this.username, password: this.password};
+                    this.$.ajaxPost.body = JSON.stringify(credentials);
+                    this.$.ajaxPost.generateRequest();
+                }
+            });
+        })();
+    </script>
+</dom-module>
