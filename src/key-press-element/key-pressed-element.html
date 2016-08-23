@@ -1,0 +1,51 @@
+<!--Polymer reference-->
+<link rel="import" href="../../app/bower_components/polymer/polymer.html">
+<link rel="import" href="../../app/bower_components/iron-a11y-keys/iron-a11y-keys.html">
+<link rel="import" href="../../app/bower_components/paper-toast/paper-toast.html">
+
+
+<!-- Password element, this element is going to be have the input as a password -->
+<dom-module id="key-pressed-element">
+<template >
+  <iron-a11y-keys
+    id="keys"
+    keys="enter"
+    target="[[target]]"
+    on-keys-pressed="_enterPressed">
+  </iron-a11y-keys>
+  <paper-toast id="toastResponse" duration="30000">
+  </paper-toast>
+</template>
+<script>
+(function () {
+  Polymer({
+    is: 'key-pressed-element',
+
+    properties: {
+      actionElement: Object,
+      pressed: {
+        type: String,
+        readOnly: true,
+        value: ''
+      },
+      boundKeys: {
+        type: Array
+      },
+
+      target: {
+        type: Object,
+        value: function() {
+          return document.body;
+        }
+      }
+    },
+
+    _enterPressed: function(event) {
+        this.actionElement.onClick();
+    },
+
+  });
+})();
+
+</script>
+</dom-module>
